@@ -56,15 +56,47 @@
 		12536ABB29868C3000BE9579 /* RealmHW */ = {
 			isa = PBXGroup;
 			children = (
-				12536ABC29868C3000BE9579 /* AppDelegate.swift */,
-				12536ABE29868C3000BE9579 /* SceneDelegate.swift */,
-				12536AC029868C3000BE9579 /* ViewController.swift */,
-				12536AC229868C3000BE9579 /* Main.storyboard */,
+				12536AD329883BDE00BE9579 /* Models */,
+				12536AD229883BD500BE9579 /* Controllers */,
+				12536AD129883BC400BE9579 /* Views */,
+				12536AD029883BA900BE9579 /* AppDelegates */,
 				12536AC529868C3200BE9579 /* Assets.xcassets */,
-				12536AC729868C3200BE9579 /* LaunchScreen.storyboard */,
 				12536ACA29868C3200BE9579 /* Info.plist */,
 			);
 			path = RealmHW;
+			sourceTree = "<group>";
+		};
+		12536AD029883BA900BE9579 /* AppDelegates */ = {
+			isa = PBXGroup;
+			children = (
+				12536ABC29868C3000BE9579 /* AppDelegate.swift */,
+				12536ABE29868C3000BE9579 /* SceneDelegate.swift */,
+			);
+			path = AppDelegates;
+			sourceTree = "<group>";
+		};
+		12536AD129883BC400BE9579 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				12536AC229868C3000BE9579 /* Main.storyboard */,
+				12536AC729868C3200BE9579 /* LaunchScreen.storyboard */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		12536AD229883BD500BE9579 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				12536AC029868C3000BE9579 /* ViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		12536AD329883BDE00BE9579 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
