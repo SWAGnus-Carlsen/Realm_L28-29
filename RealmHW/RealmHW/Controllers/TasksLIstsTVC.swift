@@ -116,7 +116,7 @@ class TasksListsTVC: UITableViewController {
 
             /// логика редактирования
             if let tasksList = tasksList {
-                StorageManager.editList(tasksList, newListName: newListName, complition: complition)
+                StorageManager.editList(tasksList, newListName: newListName)
             /// логика создания нового списка
             } else {
                 let tasksList = TasksList()
