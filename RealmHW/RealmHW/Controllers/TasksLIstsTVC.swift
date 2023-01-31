@@ -16,8 +16,6 @@ class TasksListsTVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Clean Realm DB
-//        StorageManager.deleteAll()
 
         // выборка из DB + сортировка
         tasksLists = StorageManager.getAllTasksLists().sorted(byKeyPath: "name")
@@ -74,8 +72,7 @@ class TasksListsTVC: UITableViewController {
         }
 
         let doneContextItem = UIContextualAction(style: .destructive, title: "Done") { _, _, _ in
-//            StorageManager.makeAllDone(currentList)
-//            tableView.reloadRows(at: [indexPath], with: .automatic)
+
         }
 
         editeContextItem.backgroundColor = .orange
@@ -99,8 +96,7 @@ class TasksListsTVC: UITableViewController {
             self?.tableView.reloadData()
         }
     }
-    
-    // Делаем alertForAddAndUpdatesListTasks универсальной функцией
+
     private func alertForAddAndUpdatesListTasks(_ tasksList: TasksList? = nil,
                                                 complition: @escaping () -> Void)
     {
@@ -127,7 +123,7 @@ class TasksListsTVC: UITableViewController {
                 tasksList.name = newListName
                 StorageManager.saveTasksList(tasksList: tasksList)
                 complition()
-//                self.tableView.insertRows(at: [IndexPath(row: self.tasksLists.count - 1, section: 0)], with: .automatic)
+
             }
         }
 

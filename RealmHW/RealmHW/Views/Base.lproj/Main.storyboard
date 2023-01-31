@@ -20,7 +20,7 @@
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <segments>
                                 <segment title="A-Z"/>
-                                <segment title="Date"/>
+                                <segment title="By date"/>
                             </segments>
                             <connections>
                                 <action selector="segmentedControlChanged:" destination="5VA-Us-DCZ" eventType="valueChanged" id="OeZ-vY-z4q"/>
