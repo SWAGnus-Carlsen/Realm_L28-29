@@ -19,6 +19,8 @@
 		12536ADF298868D300BE9579 /* ListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12536ADE298868D300BE9579 /* ListModel.swift */; };
 		12536AE129886A7100BE9579 /* TasksLIstsTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12536AE029886A7100BE9579 /* TasksLIstsTVC.swift */; };
 		12536AE329894D2700BE9579 /* TasksTVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12536AE229894D2700BE9579 /* TasksTVC.swift */; };
+		12536AE62989CE0D00BE9579 /* UITableViewcellExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12536AE52989CE0D00BE9579 /* UITableViewcellExt.swift */; };
+		12536AE82989CE2800BE9579 /* UIAlertControllerExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12536AE72989CE2800BE9579 /* UIAlertControllerExt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +36,8 @@
 		12536ADE298868D300BE9579 /* ListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListModel.swift; sourceTree = "<group>"; };
 		12536AE029886A7100BE9579 /* TasksLIstsTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksLIstsTVC.swift; sourceTree = "<group>"; };
 		12536AE229894D2700BE9579 /* TasksTVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksTVC.swift; sourceTree = "<group>"; };
+		12536AE52989CE0D00BE9579 /* UITableViewcellExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewcellExt.swift; sourceTree = "<group>"; };
+		12536AE72989CE2800BE9579 /* UIAlertControllerExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIAlertControllerExt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +72,7 @@
 		12536ABB29868C3000BE9579 /* RealmHW */ = {
 			isa = PBXGroup;
 			children = (
+				12536AE42989CDE500BE9579 /* Extensions */,
 				12536AD429883C3900BE9579 /* Managers */,
 				12536AD329883BDE00BE9579 /* Models */,
 				12536AD229883BD500BE9579 /* Controllers */,
@@ -121,6 +126,15 @@
 				12536AD529883C4E00BE9579 /* StorageManager.swift */,
 			);
 			path = Managers;
+			sourceTree = "<group>";
+		};
+		12536AE42989CDE500BE9579 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				12536AE52989CE0D00BE9579 /* UITableViewcellExt.swift */,
+				12536AE72989CE2800BE9579 /* UIAlertControllerExt.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,6 +220,8 @@
 				12536AE329894D2700BE9579 /* TasksTVC.swift in Sources */,
 				12536ADF298868D300BE9579 /* ListModel.swift in Sources */,
 				12536ABF29868C3000BE9579 /* SceneDelegate.swift in Sources */,
+				12536AE62989CE0D00BE9579 /* UITableViewcellExt.swift in Sources */,
+				12536AE82989CE2800BE9579 /* UIAlertControllerExt.swift in Sources */,
 				12536AE129886A7100BE9579 /* TasksLIstsTVC.swift in Sources */,
 				12536AD629883C4E00BE9579 /* StorageManager.swift in Sources */,
 			);
