@@ -102,7 +102,11 @@ final class TasksTVC: UITableViewController {
         
         let doneText = task.isComplete ? "Not done" : "Done"
         let doneContextItem = UIContextualAction(style: .destructive, title: doneText) { _, _, _ in
-            StorageManager.makeDone(task)
+            if task.isComplete{
+                StorageManager.makeNotDone(task)
+            } else {
+                StorageManager.makeDone(task)
+            }
             self.filteringTasks()
         }
         
