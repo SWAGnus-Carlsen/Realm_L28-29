@@ -33,8 +33,9 @@ class TasksListsTVC: UITableViewController {
     
     @IBAction func segmentedControlChanged(_ sender: UISegmentedControl) {
         
-        let byKeyPath = sender.selectedSegmentIndex == 0 ? "name" : "date"
-        tasksLists = tasksLists.sorted(byKeyPath: byKeyPath)
+        let KeyPath = sender.selectedSegmentIndex == 0 ? "name" : "date"
+        tasksLists = tasksLists.sorted(byKeyPath: KeyPath)
+        tableView.reloadData()
     }
     
     // MARK: - Table view data source
@@ -66,7 +67,7 @@ class TasksListsTVC: UITableViewController {
             StorageManager.deleteList(currentList)
         }
 
-        let editeContextItem = UIContextualAction(style: .destructive, title: "Edite") { _, _, _ in
+        let editContextItem = UIContextualAction(style: .destructive, title: "Edit") { _, _, _ in
             self.alertForAddAndUpdatesListTasks(currentList)
         }
 
@@ -74,10 +75,10 @@ class TasksListsTVC: UITableViewController {
             StorageManager.makeAllDone(currentList)
         }
 
-        editeContextItem.backgroundColor = .orange
+        editContextItem.backgroundColor = .purple
         doneContextItem.backgroundColor = .green
 
-        let swipeAtions = UISwipeActionsConfiguration(actions: [deleteContextItem, editeContextItem, doneContextItem])
+        let swipeAtions = UISwipeActionsConfiguration(actions: [deleteContextItem, editContextItem, doneContextItem])
 
         return swipeAtions
     }

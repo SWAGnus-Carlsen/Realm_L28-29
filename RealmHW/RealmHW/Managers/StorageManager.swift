@@ -93,7 +93,12 @@ class StorageManager {
 
     static func makeDone(_ task: Task) {
         try! realm.write {
-            task.isComplete.toggle()
+            task.isComplete = true
+        }
+    }
+    static func makeNotDone(_ task: Task) {
+        try! realm.write {
+            task.isComplete = false
         }
     }
 }

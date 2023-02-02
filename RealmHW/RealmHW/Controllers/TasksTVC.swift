@@ -46,7 +46,7 @@ final class TasksTVC: UITableViewController {
     
     private var notCompletedTasks: Results<Task>!
     private var completedTasks: Results<Task>!
-    
+    private var currentTasksListSTR: [String]?
     override func viewDidLoad() {
         super.viewDidLoad()
         /// title
@@ -56,6 +56,9 @@ final class TasksTVC: UITableViewController {
         
         let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addBarButtonSystemItemSelector))
         self.navigationItem.setRightBarButtonItems([add, editButtonItem], animated: true)
+        currentTasksList?.tasks.forEach {
+            currentTasksListSTR?.append($0.name)
+        }
     }
     
     // MARK: - Table view data source
@@ -103,7 +106,7 @@ final class TasksTVC: UITableViewController {
             self.filteringTasks()
         }
         
-        editContextItem.backgroundColor = .orange
+        editContextItem.backgroundColor = .purple
         doneContextItem.backgroundColor = .green
         
         let swipeActions = UISwipeActionsConfiguration(actions: [deleteContextItem, editContextItem, doneContextItem])
@@ -111,20 +114,31 @@ final class TasksTVC: UITableViewController {
         return swipeActions
     }
     
-    /*
+  
      // Override to support rearranging the table view.
      override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-     
+         if fromIndexPath != to {
+             
+             if fromIndexPath.section == 0,
+                to.section == 1 {
+                 let task = notCompletedTasks[fromIndexPath.row]
+                 StorageManager.makeDone(task)
+        
+             } else if fromIndexPath.section == 1,
+                       to.section == 0{
+                 let task = completedTasks[fromIndexPath.row]
+                 StorageManager.makeNotDone(task)
+             }
+         }
      }
-     */
+     
     
-    /*
+    
      // Override to support conditional rearranging of the table view.
      override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-     // Return false if you do not want the item to be re-orderable.
      return true
      }
-     */
+    
     
     private func filteringTasks() {
         notCompletedTasks = currentTasksList?.tasks.filter("isComplete = false")
