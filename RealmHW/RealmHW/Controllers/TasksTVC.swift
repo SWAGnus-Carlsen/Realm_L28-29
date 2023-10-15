@@ -8,47 +8,25 @@
 import UIKit
 import RealmSwift
 
-enum TasksTVCFlow {
-    case addingNewTask
-    case editingTask(task: Task)
-}
-
-struct TxtAlertData {
-    
-    let titleForAlert = "Task value"
-    var messageForAlert: String
-    let doneButtonForAlert: String
-    let cancelTxt = "Cancel"
-    
-    let newTextFieldPlaceholder = "New task"
-    let noteTextFieldPlaceholder = "Note"
-    
-    var taskName: String?
-    var taskNote: String?
-    
-    init(tasksTVCFlow: TasksTVCFlow) {
-        switch tasksTVCFlow {
-            case .addingNewTask:
-                messageForAlert = "Please insert new task value"
-                doneButtonForAlert = "Save"
-            case .editingTask(let task):
-                messageForAlert = "Please edit your task"
-                doneButtonForAlert = "Update"
-                taskName = task.name
-                taskNote = task.note
-        }
-    }
-}
-
 final class TasksTVC: UITableViewController {
     
+    //MARK: Internal Properties
     var currentTasksList: TasksList?
     
+    //MARK: Private Properties
     private var notCompletedTasks: Results<Task>!
     private var completedTasks: Results<Task>!
     private var currentTasksListSTR: [String]?
+    
+    //MARK: Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
+    }
+    
+    
+    //MARK: Private methods
+    private func setupView() {
         /// title
         title = currentTasksList?.name
         /// filtering tasks
@@ -61,7 +39,82 @@ final class TasksTVC: UITableViewController {
         }
     }
     
-    // MARK: - Table view data source
+    private func filteringTasks() {
+        notCompletedTasks = currentTasksList?.tasks.filter("isComplete = false")
+        completedTasks = currentTasksList?.tasks.filter("isComplete = true")
+        tableView.reloadData()
+    }
+}
+
+// MARK: - Adding And Updating List
+
+extension TasksTVC {
+    
+    @objc private func addBarButtonSystemItemSelector() {
+        alertForAddAndUpdateList(tasksTVCFlow: .addingNewTask)
+    }
+    
+    private func alertForAddAndUpdateList(tasksTVCFlow: TasksTVCFlow) {
+        
+        let txtAlertData = TxtAlertData(tasksTVCFlow: tasksTVCFlow)
+
+
+        let alert = UIAlertController(title: txtAlertData.titleForAlert,
+                                      message: txtAlertData.messageForAlert,
+                                      preferredStyle: .alert)
+        
+        /// TextFields
+        var taskTextField: UITextField!
+        var noteTextField: UITextField!
+        
+        alert.addTextField { textField in
+            taskTextField = textField
+            taskTextField.placeholder = txtAlertData.newTextFieldPlaceholder
+            taskTextField.text = txtAlertData.taskName
+        }
+
+        alert.addTextField { textField in
+            noteTextField = textField
+            noteTextField.placeholder = txtAlertData.noteTextFieldPlaceholder
+            noteTextField.text = txtAlertData.taskNote
+        }
+
+        /// Actions
+
+        let saveAction = UIAlertAction(title: txtAlertData.doneButtonForAlert,
+                                       style: .default) { [weak self] _ in
+
+            guard let newNameTask = taskTextField.text, !newNameTask.isEmpty,
+                  let newNote = noteTextField.text, !newNote.isEmpty,
+                  let self = self else { return }
+
+            switch tasksTVCFlow {
+                case .addingNewTask:
+                    let task = Task()
+                    task.name = newNameTask
+                    task.note = newNote
+                    guard let currentTasksList = self.currentTasksList else { return }
+                    StorageManager.saveTask(currentTasksList, task: task)
+                case .editingTask(let task):
+                    StorageManager.editTask(task,
+                                            newNameTask: newNameTask,
+                                            newNote: newNote)
+            }
+            self.filteringTasks()
+        }
+
+        let cancelAction = UIAlertAction(title: txtAlertData.cancelTxt, style: .destructive)
+
+        alert.addAction(saveAction)
+        alert.addAction(cancelAction)
+
+        present(alert, animated: true)
+    }
+}
+
+// MARK: - TableViewDataSource and some cool stuff
+
+extension TasksTVC {
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         2
@@ -139,98 +192,7 @@ final class TasksTVC: UITableViewController {
     
     
      // Override to support conditional rearranging of the table view.
-     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-     return true
-     }
-    
-    
-    private func filteringTasks() {
-        notCompletedTasks = currentTasksList?.tasks.filter("isComplete = false")
-        completedTasks = currentTasksList?.tasks.filter("isComplete = true")
-        tableView.reloadData()
+    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
 }
-
-// MARK: - Adding And Updating List
-
-extension TasksTVC {
-    
-    @objc private func addBarButtonSystemItemSelector() {
-        alertForAddAndUpdateList(tasksTVCFlow: .addingNewTask)
-    }
-    
-    private func alertForAddAndUpdateList(tasksTVCFlow: TasksTVCFlow) {
-        
-        let txtAlertData = TxtAlertData(tasksTVCFlow: tasksTVCFlow)
-        
-//        UIAlertController.showAlertWithTwoTF(tasksTVCFlow: txtAlertData) { txtAlertData in
-//            // тут либо создаем новый либо редактируем
-//            switch tasksTVCFlow {
-//                case .addingNewTask:
-//                    let task = Task()
-//                    task.name = txtAlertData.taskName
-//                    task.note = txtAlertData.taskNote
-//                    guard let currentTasksList = self.currentTasksList else { return }
-//                    StorageManager.saveTask(currentTasksList, task: task)
-//                case .editingTask(let task):
-//                    StorageManager.editTask(task,
-//                                            newNameTask: txtAlertData.taskName,
-//                                            newNote: txtAlertData.taskNote)
-//            }
-//        } cancelAction: {
-//            // можем что то еще сделать
-//        }
-
-        let alert = UIAlertController(title: txtAlertData.titleForAlert,
-                                      message: txtAlertData.messageForAlert,
-                                      preferredStyle: .alert)
-        
-        /// UITextField-s
-        var taskTextField: UITextField!
-        var noteTextField: UITextField!
-        
-        alert.addTextField { textField in
-            taskTextField = textField
-            taskTextField.placeholder = txtAlertData.newTextFieldPlaceholder
-            taskTextField.text = txtAlertData.taskName
-        }
-
-        alert.addTextField { textField in
-            noteTextField = textField
-            noteTextField.placeholder = txtAlertData.noteTextFieldPlaceholder
-            noteTextField.text = txtAlertData.taskNote
-        }
-
-        /// Action-s
-
-        let saveAction = UIAlertAction(title: txtAlertData.doneButtonForAlert,
-                                       style: .default) { [weak self] _ in
-
-            guard let newNameTask = taskTextField.text, !newNameTask.isEmpty,
-                  let newNote = noteTextField.text, !newNote.isEmpty,
-                  let self = self else { return }
-
-            switch tasksTVCFlow {
-                case .addingNewTask:
-                    let task = Task()
-                    task.name = newNameTask
-                    task.note = newNote
-                    guard let currentTasksList = self.currentTasksList else { return }
-                    StorageManager.saveTask(currentTasksList, task: task)
-                case .editingTask(let task):
-                    StorageManager.editTask(task,
-                                            newNameTask: newNameTask,
-                                            newNote: newNote)
-            }
-            self.filteringTasks()
-        }
-
-        let cancelAction = UIAlertAction(title: txtAlertData.cancelTxt, style: .destructive)
-
-        alert.addAction(saveAction)
-        alert.addAction(cancelAction)
-
-        present(alert, animated: true)
-    }
-}
-

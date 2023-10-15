@@ -8,10 +8,9 @@
 import Foundation
 import RealmSwift
 
-class Task: Object {
+final class Task: Object {
     @Persisted var date = Date()
     @Persisted var isComplete = false
     @Persisted var name = ""
     @Persisted var note = ""
-   
 }

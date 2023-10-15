@@ -8,20 +8,35 @@
 import UIKit
 import RealmSwift
 
-class TasksListsTVC: UITableViewController {
+final class TasksListsTVC: UITableViewController {
     
+    //MARK: Properties
     var notificationToken: NotificationToken?
     
-    // Results - отображает данные в реальном времени
+    // tasksLists - displays real-time data
     var tasksLists: Results<TasksList>!
 
+    
+    @IBAction func segmentedControlChanged(_ sender: UISegmentedControl) {
+        
+        let KeyPath = sender.selectedSegmentIndex == 0 ? "name" : "date"
+        tasksLists = tasksLists.sorted(byKeyPath: KeyPath)
+        tableView.reloadData()
+    }
+    
+    
+    //MARK: Lyfecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Clean Realm DB
-//        StorageManager.deleteAll()
+        setupView()
+    }
 
-        // выборка из DB + сортировка
+    
+    //MARK: Private methods
+    
+    private func setupView() {
+        
+        // database selection + sort
         tasksLists = StorageManager.getAllTasksLists().sorted(byKeyPath: "name")
         addTasksListsObserver()
 
@@ -31,14 +46,47 @@ class TasksListsTVC: UITableViewController {
                                                    animated: true)
     }
     
-    @IBAction func segmentedControlChanged(_ sender: UISegmentedControl) {
-        
-        let KeyPath = sender.selectedSegmentIndex == 0 ? "name" : "date"
-        tasksLists = tasksLists.sorted(byKeyPath: KeyPath)
-        tableView.reloadData()
+    private func addTasksListsObserver() {
+        // Realm notification
+        notificationToken = tasksLists.observe { [weak self] change in
+            guard let self = self else { return }
+            switch change {
+            case .initial:
+                print("initial element")
+            case .update(_, let deletions, let insertions, let modifications):
+                print("deletions: \(deletions)")
+                print("insertions: \(insertions)")
+                print("modifications: \(modifications)")
+                if !modifications.isEmpty {
+                    let indexPathArray = self.createIndexPathArray(intArr: modifications)
+                    self.tableView.reloadRows(at: indexPathArray, with: .automatic)
+                }
+                if !deletions.isEmpty {
+                    let indexPathArray = self.createIndexPathArray(intArr: deletions)
+                    self.tableView.deleteRows(at: indexPathArray, with: .automatic)
+                }
+                if !insertions.isEmpty {
+                    let indexPathArray = self.createIndexPathArray(intArr: insertions)
+                    self.tableView.insertRows(at: indexPathArray, with: .automatic)
+                }
+            case .error(let error):
+                print("error: \(error)")
+            }
+        }
     }
     
-    // MARK: - Table view data source
+    private func createIndexPathArray(intArr: [Int]) -> [IndexPath] {
+        var indexPathArray = [IndexPath]()
+        for row in intArr {
+            indexPathArray.append(IndexPath(row: row, section: 0))
+        }
+        return indexPathArray
+    }
+}
+
+// MARK: - TableDataSource and some cool additions
+extension TasksListsTVC {
+    
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         tasksLists.count
@@ -82,10 +130,12 @@ class TasksListsTVC: UITableViewController {
 
         return swipeAtions
     }
+}
 
 
-    // MARK: - Navigation
-
+//MARK: - Navigation
+extension TasksListsTVC {
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let destinationVC = segue.destination as? TasksTVC,
            let index = tableView.indexPathForSelectedRow {
@@ -94,12 +144,17 @@ class TasksListsTVC: UITableViewController {
         }
     }
     
+}
+
+//MARK: - Targets
+private extension TasksListsTVC {
+    
     @objc func addBarButtonSystemItemSelector() {
         alertForAddAndUpdatesListTasks()
     }
     
-    // Делаем alertForAddAndUpdatesListTasks универсальной функцией
-    private func alertForAddAndUpdatesListTasks(_ tasksList: TasksList? = nil) {
+    // Make alertForAddAndUpdatesListTasks a unfied func
+    func alertForAddAndUpdatesListTasks(_ tasksList: TasksList? = nil) {
         let title = tasksList == nil ? "New List" : "Edit List"
         let message = "Please insert list name"
         let doneButtonName = tasksList == nil ? "Save" : "Update"
@@ -114,10 +169,10 @@ class TasksListsTVC: UITableViewController {
                 return
             }
 
-            /// логика редактирования
+            /// edit logic
             if let tasksList = tasksList {
                 StorageManager.editList(tasksList, newListName: newListName)
-            /// логика создания нового списка
+            /// create new list logic
             } else {
                 let tasksList = TasksList()
                 tasksList.name = newListName
@@ -138,42 +193,5 @@ class TasksListsTVC: UITableViewController {
             alertTextField.placeholder = "List Name"
         }
         present(alert, animated: true)
-    }
-    
-    private func addTasksListsObserver() {
-        // Realm notification
-        notificationToken = tasksLists.observe { [weak self] change in
-            guard let self = self else { return }
-            switch change {
-            case .initial:
-                print("initial element")
-            case .update(_, let deletions, let insertions, let modifications):
-                print("deletions: \(deletions)")
-                print("insertions: \(insertions)")
-                print("modifications: \(modifications)")
-                if !modifications.isEmpty {
-                    let indexPathArray = self.createIndexPathArray(intArr: modifications)
-                    self.tableView.reloadRows(at: indexPathArray, with: .automatic)
-                }
-                if !deletions.isEmpty {
-                    let indexPathArray = self.createIndexPathArray(intArr: deletions)
-                    self.tableView.deleteRows(at: indexPathArray, with: .automatic)
-                }
-                if !insertions.isEmpty {
-                    let indexPathArray = self.createIndexPathArray(intArr: insertions)
-                    self.tableView.insertRows(at: indexPathArray, with: .automatic)
-                }
-            case .error(let error):
-                print("error: \(error)")
-            }
-        }
-    }
-    
-    private func createIndexPathArray(intArr: [Int]) -> [IndexPath] {
-        var indexPathArray = [IndexPath]()
-        for row in intArr {
-            indexPathArray.append(IndexPath(row: row, section: 0))
-        }
-        return indexPathArray
     }
 }

@@ -8,10 +8,14 @@
 import Foundation
 import RealmSwift
 
+//MARK: - Realm essential property
 let realm = try! Realm()
 
-class StorageManager {
+
+//MARK: - StorageManager
+final class StorageManager {
     
+    //MARK: Base static funcs
     static func deleteAll() {
         do {
             try realm.write {
@@ -40,7 +44,7 @@ class StorageManager {
         do {
             try realm.write {
                 let tasks = tasksList.tasks
-                // последовательно удаляем tasks и tasksList
+                // sequentially delete tasks и tasksList
                 realm.delete(tasks)
                 realm.delete(tasksList)
             }
@@ -70,7 +74,12 @@ class StorageManager {
         }
     }
 
-    // MARK: - Tasks Methods
+    
+}
+
+// MARK: - Tasks Methods
+extension StorageManager {
+   
 
     static func saveTask(_ tasksList: TasksList, task: Task) {
         try! realm.write {
